@@ -1,5 +1,16 @@
+use encoding_rs;
 use lindera::tokenizer::{Token, Tokenizer};
-use std::cmp::max;
+use std::io::{BufRead, BufReader};
+use std::{cmp::max, fs};
+
+fn read_aozora_as_utf8(path: &str) {
+    let file = fs::read(path).unwrap();
+    let (text, _, _) = encoding_rs::SHIFT_JIS.decode(&file);
+    let reader = BufReader::new(text.as_bytes());
+    for line in reader.lines() {
+        println!("{}", line.unwrap());
+    }
+}
 
 fn tokenize(target_text: &String) -> Vec<Token> {
     let tokenizer = Tokenizer::new().unwrap();
@@ -35,6 +46,7 @@ fn find_expression(search_range: usize, tokens: &Vec<Token>) -> Vec<String> {
 }
 
 fn main() {
+    read_aozora_as_utf8("text_data/sample.txt");
     let target_text = String::from(
         "とりあえず読むには読んだが、あまりにも難しい。早いは早いがあまり正確ではない。",
     );
