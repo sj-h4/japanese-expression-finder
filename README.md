@@ -1,3 +1,13 @@
+## 文字コードの変換
+
+`nkf` がインストールされていれば
+
+```=bash
+bash convert_shift_jis2utf8.sh example.txt
+```
+
+で `example.txt` を UTF-8 に変換したファイルが `output/` 以下に置かれます（`output/` フォルダがない場合は作成してください）。
+
 ## 方針
 
 その１
