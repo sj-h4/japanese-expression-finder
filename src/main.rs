@@ -1,4 +1,3 @@
-pub mod read_aozora;
 use lindera::tokenizer::{Token, Tokenizer};
 use std::{
     cmp::max,
@@ -22,10 +21,18 @@ fn find_expression(search_range: isize, tokens: &Vec<Token>) -> Vec<String> {
         if value.text != "は" || i == token_length - 1 {
             continue;
         }
-        let target_word = tokens[i + 1].detail.get(orth_token_index).unwrap();
+        let target_word;
+        match tokens[i + 1].detail.get(orth_token_index) {
+            Some(v) => target_word = v,
+            None => continue,
+        };
         let start_index = max(0, i as isize - search_range) as usize;
         for j in start_index..i {
-            let word = tokens[j].detail.get(orth_token_index).unwrap();
+            let word;
+            match tokens[j].detail.get(orth_token_index) {
+                Some(v) => word = v,
+                None => continue,
+            }
             if word == target_word {
                 let mut found_expression = String::from("");
                 for k in j..i + 2 {
@@ -40,7 +47,7 @@ fn find_expression(search_range: isize, tokens: &Vec<Token>) -> Vec<String> {
 }
 
 fn main() {
-    let file = File::open("output/aozora.txt").unwrap();
+    let file = File::open("output/text_data/michikusa.txt").unwrap();
     let reader = BufReader::new(file);
     for line in reader.lines() {
         let line = line.unwrap();
