@@ -1,6 +1,7 @@
 use lindera::tokenizer::{Token, Tokenizer};
 use std::{
     cmp::{max, min},
+    env,
     fs::File,
     io::{BufRead, BufReader},
 };
@@ -43,7 +44,7 @@ fn find_expression(search_range: usize, tokens: &Vec<Token>) -> Vec<String> {
             None => continue,
         };
         let start_index = max(0, i as isize - search_range as isize) as usize;
-        let end_index = min(i + search_range + 3, token_length);
+        let end_index = min(i + search_range, token_length);
 
         // HACK: もう少しすっきり書けるはず
         let mut has_conjection = false;
@@ -79,7 +80,9 @@ fn find_expression(search_range: usize, tokens: &Vec<Token>) -> Vec<String> {
 }
 
 fn main() {
-    let file = File::open("output/text_data/michikusa.txt").unwrap();
+    let args = env::args().collect::<Vec<String>>();
+    let file_path = &args[1];
+    let file = File::open(file_path).unwrap();
     let reader = BufReader::new(file);
     for line in reader.lines() {
         let line = line.unwrap();
