@@ -25,17 +25,13 @@ fn test_tokenize() {
 }
 
 fn find_expression(search_range: usize, tokens: &Vec<Token>) -> Vec<String> {
+    let particles = ["は", "も"];
     let conjections = ["が", "けれど", "けど", "ども", "も", "しかし", "だが"];
     let mut expressions = Vec::new();
     let orth_token_index = 6;
     let token_length = tokens.len();
     for (i, value) in tokens.iter().enumerate() {
-        let word_category;
-        match value.detail.get(1) {
-            Some(v) => word_category = v,
-            None => continue,
-        }
-        if word_category != "係助詞" || i == token_length - 1 {
+        if !particles.contains(&value.text) || i == token_length - 1 {
             continue;
         }
         let target_word;
@@ -49,8 +45,7 @@ fn find_expression(search_range: usize, tokens: &Vec<Token>) -> Vec<String> {
         // HACK: もう少しすっきり書けるはず
         let mut has_conjection = false;
         for word_index in i + 1..end_index {
-            let word = tokens[word_index].text;
-            if conjections.contains(&word) {
+            if conjections.contains(&tokens[word_index].text) {
                 has_conjection = true;
                 break;
             }
@@ -72,7 +67,6 @@ fn find_expression(search_range: usize, tokens: &Vec<Token>) -> Vec<String> {
                     found_expression += tokens[k].text;
                 }
                 expressions.push(found_expression);
-                continue;
             }
         }
     }
